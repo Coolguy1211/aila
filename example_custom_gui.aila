@@ -1,0 +1,6 @@
+window Cool PyGame GUI
+label Welcome to Custom GUI!
+input Type something cool
+button Click for Magic
+show Let's get started!
+start

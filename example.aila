@@ -1,0 +1,4 @@
+say Hello World
+repeat 3 Hi there!
+wait 1
+say Done!

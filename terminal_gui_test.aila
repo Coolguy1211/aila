@@ -1,0 +1,6 @@
+window Terminal GUI Demo
+label Welcome to Terminal GUI!
+input Type something here
+button Click me!
+button Exit
+show Hello from Terminal GUI!

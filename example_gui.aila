@@ -1,0 +1,7 @@
+window My Aila GUI
+label Welcome to Aila GUI!
+input Enter your name
+button Click me!
+wait 1
+show Hello from Aila GUI!
+start

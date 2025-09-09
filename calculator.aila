@@ -1,0 +1,6 @@
+window Calculator
+label Simple Calculator
+input 0
+button Add 1
+button Subtract 1
+start
