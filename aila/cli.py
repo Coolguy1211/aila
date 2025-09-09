@@ -51,11 +51,7 @@ REQUIREMENTS:
     code = code.replace('```python', '').replace('```', '')
     return code.strip()
 
-def get_ollama_model() -> str:
-    model = os.getenv("OLLAMA_MODEL", "llama3.1")
-    return model
-
-def compile_aila_ollama(aila_code: str) -> str:
+def compile_aila_ollama(aila_code: str, model: str) -> str:
     """Use a local Ollama model to translate Aila to Python with the same guardrails."""
     prompt = f"""
 You are Aila 3.0's local compiler. Translate the following Aila program into Python 3 using Tkinter via AilaGUI.
@@ -83,10 +79,11 @@ REQUIREMENTS:
 - Do NOT import anything else except standard lib.
 - Do NOT use eval/exec/network/filesystem.
 """
-    result = ollama.generate(model=get_ollama_model(), prompt=prompt)
+    result = ollama.generate(model=model, prompt=prompt)
     code = (result.get("response") or "").strip()
     code = code.replace('```python', '').replace('```', '')
     return code.strip()
+
 
 def run_python(code: str) -> str:
     try:
@@ -104,14 +101,16 @@ def run_python(code: str) -> str:
     except Exception as e:
         return f"Error running code: {e}"
 
+
 def main():
     parser = ArgumentParser(prog="aila", description="Aila 3.0 runner")
     parser.add_argument("filename", nargs="?", help="Path to .aila program")
     parser.add_argument("--local", action="store_true", help="Compile with local Ollama model instead of Gemini")
+    parser.add_argument("--model", default=os.getenv("OLLAMA_MODEL", "llama3.1"), help="The local model to use (requires --local)")
     args = parser.parse_args()
 
     if not args.filename:
-        print("Usage: aila [--local] <filename.aila>")
+        print("Usage: aila [--local] [--model <model_name>] <filename.aila>")
         sys.exit(0)
 
     filename = args.filename
@@ -125,8 +124,9 @@ def main():
     print("=== Aila Code ===\n", aila_code)
 
     if args.local:
-        print("\n[Local] Compiling via Ollama...")
-        py_code = compile_aila_ollama(aila_code)
+        model_name = args.model
+        print(f"\n[Local] Compiling via Ollama (model: {model_name})...")
+        py_code = compile_aila_ollama(aila_code, model=model_name)
         print("\n=== Python Code ===\n", py_code)
         print("\n[Python] Executing...\n")
         output = run_python(py_code)
