@@ -1,10 +1,13 @@
+import shlex
 from typing import List
 from .ast import AilaCommand
+
 
 class Parser:
     """
     A simple parser for the Aila language.
     It tokenizes the source code on a line-by-line basis.
+    It uses shlex to handle quoted strings.
     """
     def __init__(self, source: str):
         self.source = source
@@ -22,7 +25,19 @@ class Parser:
             if not line or line.startswith("#"):
                 continue
 
-            parts = line.split()
+            try:
+                parts = shlex.split(line)
+            except ValueError as e:
+                # Provide a more user-friendly error for unclosed quotes
+                if "No closing quotation" in str(e):
+                    print(f"Syntax Error at line {line_number}: Unclosed quote in line: '{line}'")
+                else:
+                    print(f"Syntax Error at line {line_number}: {e}")
+                continue # Skip malformed lines
+
+            if not parts:
+                continue
+
             command_name = parts[0].lower()
             args = parts[1:]
 

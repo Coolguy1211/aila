@@ -59,9 +59,33 @@ You are Aila 3.0's compiler. Your sole purpose is to translate the user's Aila c
 
 **LANGUAGE SPECIFICATIONS & EXAMPLES:**
 
-- `say TEXT`: Prints text to the console.
-  - Aila: `say Hello World`
-  - Python: `print("Hello World")`
+- `set VAR VALUE`: Sets a variable.
+  - Aila: `set name "Aila"`
+  - Python: `name = "Aila"`
+  - Aila: `set counter 10`
+  - Python: `counter = 10`
+
+- `say TEXT`: Prints text. Can interpolate variables with $.
+  - Aila: `say "Hello, $name"`
+  - Python: `print(f"Hello, {name}")`
+  - Aila: `say "Counter is $counter"`
+  - Python: `print(f"Counter is {counter}")`
+
+- `add VAR VALUE`: Adds a value to a numeric variable.
+  - Aila: `add counter 1`
+  - Python: `counter += 1`
+
+- `sub VAR VALUE`: Subtracts a value from a numeric variable.
+  - Aila: `sub counter 1`
+  - Python: `counter -= 1`
+
+- `mul VAR VALUE`: Multiplies a numeric variable by a value.
+  - Aila: `mul counter 2`
+  - Python: `counter *= 2`
+
+- `div VAR VALUE`: Divides a numeric variable by a value.
+  - Aila: `div counter 2`
+  - Python: `counter /= 2`
 
 - `repeat N TEXT`: Repeats printing text N times.
   - Aila: `repeat 3 "Hi!"`
@@ -206,6 +230,8 @@ def run_python(code: str) -> str:
         return f"Error running code: {e}"
 
 
+from .interpreter import AilaInterpreter
+
 def handle_run(args, colors):
     """Handles the 'run' command."""
     start_time = time.time()
@@ -314,6 +340,24 @@ def handle_run(args, colors):
         colors.plain(f"Execution:     {exec_time:.2f}s")
         colors.plain(f"Total:         {time.time() - start_time:.2f}s")
 
+
+def handle_interpret(args, colors):
+    """Handles the 'interpret' command."""
+    filename = args.filename
+    if not os.path.exists(filename):
+        colors.fail(f"File not found: {filename}")
+        sys.exit(1)
+
+    with open(filename, "r") as f:
+        aila_code = f.read()
+
+    colors.bold("=== Aila Code ===")
+    colors.plain(aila_code)
+
+    colors.bold("\n[Interpreter] Executing...")
+    interpreter = AilaInterpreter()
+    interpreter.execute(aila_code)
+
 def handle_init(args, colors):
     """Handles the 'init' command."""
     filename = args.filename
@@ -405,6 +449,12 @@ def handle_validate(args, colors):
         "show": (1, float('inf')),
         "start": (0, 0),
         "close": (0, 0),
+        # New variable and math commands
+        "set": (2, 2),
+        "add": (2, 2),
+        "sub": (2, 2),
+        "mul": (2, 2),
+        "div": (2, 2),
     }
 
     for command in ast:
@@ -495,6 +545,11 @@ def main():
     run_parser.add_argument("--retries", type=int, default=2, help="Number of retries for API calls on failure")
     run_parser.add_argument("--retry-delay", type=int, default=5, help="Delay between retries in seconds")
     run_parser.set_defaults(func=handle_run)
+
+    # Interpret command
+    interpret_parser = subparsers.add_parser("interpret", help="Execute an Aila program with the local interpreter")
+    interpret_parser.add_argument("filename", help="Path to .aila program")
+    interpret_parser.set_defaults(func=handle_interpret)
 
     # Init command
     init_parser = subparsers.add_parser("init", help="Create a new Aila project")
