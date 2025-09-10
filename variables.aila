@@ -1,0 +1,27 @@
+# Test file for variables and numeric operations
+
+# Set a string variable
+set name "World"
+
+# Say hello with the variable
+say "Hello, $name!"
+
+# Set a numeric variable
+set counter 10
+say "Counter is $counter"
+
+# Add to the counter
+add counter 5
+say "Counter after add is $counter"
+
+# Subtract from the counter
+sub counter 2
+say "Counter after sub is $counter"
+
+# Multiply the counter
+mul counter 3
+say "Counter after mul is $counter"
+
+# Divide the counter
+div counter 2
+say "Counter after div is $counter"
