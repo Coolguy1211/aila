@@ -41,9 +41,16 @@ class Colors:
     def plain(self, text): print(text)
 
 PROMPT_TEMPLATE = """
-You are Aila 3.0's compiler. Your sole purpose is to translate the user's Aila code into safe, sandboxed Python 3 code that uses Tkinter via the provided AilaGUI helper class.
+You are Aila 3.0's compiler. Your sole purpose is to translate the user's Aila code into safe, sandboxed Python 3 code. You must only generate code for the commands present in the user's input.
+
+**GUI INSTRUCTIONS:**
+- To use GUI features, you MUST first import and instantiate the AilaGUI class like this:
+  `from aila.gui import AilaGUI`
+  `gui = AilaGUI()`
+- All subsequent GUI commands MUST be called as methods on this `gui` object (e.g., `gui.create_window(...)`).
 
 **CRITICAL SAFETY INSTRUCTIONS:**
+- If you use functions from the `time` module, you MUST include `import time` at the beginning of the script.
 - YOU MUST NOT import any modules other than `aila.gui` and `time`.
 - YOU MUST NOT use any built-in functions that interact with the filesystem (e.g., `open`, `read`, `write`), network (e.g., `socket`, `urllib`), or subprocesses (e.g., `os.system`, `subprocess.run`).
 - YOU MUST NOT use `eval()` or `exec()`.
@@ -76,9 +83,21 @@ You are Aila 3.0's compiler. Your sole purpose is to translate the user's Aila c
   - Aila: `input "Default value"`
   - Python: `name_entry = gui.input("Default value")`
 
-- `button TEXT`: Adds a button.
-  - Aila: `button "Click Me"`
-  - Python: `gui.button("Click Me", on_click=lambda: None)`
+- `button TEXT`: Adds a button. The `on_click` function should contain the logic.
+  - Aila:
+    input "0"
+    button "Increment"
+  - Python:
+    entry = gui.input("0")
+    def on_increment():
+        current_value = int(entry.get())
+        entry.delete(0, "end")
+        entry.insert(0, str(current_value + 1))
+    gui.button("Increment", on_click=on_increment)
+
+- `show TEXT`: Shows a message box with `TEXT`.
+  - Aila: `show "Hello"`
+  - Python: `gui.show("Hello")`
 
 - `start`: Starts the GUI event loop. This must be the last command for a GUI app.
   - Aila: `start`
@@ -451,7 +470,6 @@ def main():
     parser.add_argument('--version', action='version', version=f'%(prog)s {__version__}')
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
-    subparsers.required = True
 
     # Run command
     run_parser = subparsers.add_parser("run", help="Compile and run an Aila program")
@@ -497,3 +515,6 @@ def main():
         sys.exit(0)
 
     args.func(args, colors)
+
+if __name__ == "__main__":
+    main()

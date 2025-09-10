@@ -73,6 +73,7 @@ aila --local example.aila
 - Python 3.9 or higher
 - Google Gemini API key (cloud mode)
 - Ollama installed and a supported local model pulled (local mode)
+- A graphical display environment (`$DISPLAY` set) for GUI applications
 
 ## Roadmap: 200 Features for Aila 3.x
 
