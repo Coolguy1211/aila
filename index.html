@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aila 3.0</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        main {
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        section {
+            background: #fff;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        pre {
+            background: #eee;
+            padding: 1rem;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        code {
+            font-family: monospace;
+        }
+        footer {
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        a {
+            color: #333;
+        }
+        a:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Aila 3.0</h1>
+        <p>An AI-powered programming language that can translate simple Aila commands into safe Python code and execute it.</p>
+    </header>
+
+    <main>
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Aila 3.0 is an AI-powered programming language that can translate simple Aila commands into safe Python code and execute it via:</p>
+            <ul>
+                <li>Cloud: Google's Gemini</li>
+                <li>Local: Ollama (no network)</li>
+            </ul>
+        </section>
+
+        <section id="getting-started">
+            <h2>Getting Started</h2>
+            <h3>Installation</h3>
+            <p>Navigate to the project folder and install locally:</p>
+            <pre><code>python3 -m pip install -e .</code></pre>
+
+            <h3>Configuration</h3>
+            <p>Set your Gemini API key in your environment (for cloud mode):</p>
+            <pre><code># macOS/Linux
+export GEMINI_API_KEY="YOUR_KEY_HERE"
+
+# Windows PowerShell
+setx GEMINI_API_KEY "YOUR_KEY_HERE"</code></pre>
+
+            <h3>Usage</h3>
+            <p>Create an Aila program file (e.g., <code>example.aila</code>):</p>
+            <pre><code>say Hello World
+repeat 3 Hi there!
+wait 1
+say Done!</code></pre>
+            <p>Run your program with Gemini (requires <code>GEMINI_API_KEY</code>):</p>
+            <pre><code>aila example.aila</code></pre>
+            <p>Run locally with Ollama (no API key required):</p>
+            <pre><code># Install and run Ollama first, and pull a model (e.g., llama3.1)
+# macOS: brew install ollama && ollama serve &
+ollama pull llama3.1
+
+# Optionally select a model via env var
+export OLLAMA_MODEL="llama3.1"
+
+# Compile and run locally
+aila --local example.aila</code></pre>
+        </section>
+
+        <section id="features">
+            <h2>Language Features (subset)</h2>
+            <ul>
+                <li><code>say X</code>: Prints X to the console</li>
+                <li><code>repeat N X</code>: Repeats printing X N times</li>
+                <li><code>wait N</code>: Waits for N seconds</li>
+                <li><code>window TITLE</code>: Creates a GUI window with <code>TITLE</code></li>
+                <li><code>label TEXT</code>: Adds a label to the window</li>
+                <li><code>input [TEXT]</code>: Adds an input field with optional default <code>TEXT</code></li>
+                <li><code>button TEXT</code>: Adds a button with <code>TEXT</code></li>
+                <li><code>show TEXT</code>: Shows a message box with <code>TEXT</code></li>
+                <li><code>start</code>: Starts the GUI event loop</li>
+                <li><code>close</code>: Closes the GUI window</li>
+            </ul>
+        </section>
+
+        <section id="requirements">
+            <h2>Requirements</h2>
+            <ul>
+                <li>Python 3.9 or higher</li>
+                <li>Google Gemini API key (cloud mode)</li>
+                <li>Ollama installed and a supported local model pulled (local mode)</li>
+                <li>A graphical display environment (<code>$DISPLAY</code> set) for GUI applications</li>
+            </ul>
+        </section>
+
+        <section id="roadmap">
+            <h2>Roadmap: 200 Features for Aila 3.x</h2>
+            <p>Below is a concise outline of 200 planned features, grouped by category. Counts per category sum to 200.</p>
+            <h3>CLI and Tooling (15)</h3>
+            <p>--local Ollama model selection, caching, verbosity, dry-run, AST dump, code-out path, timeout, retries, colored logs, perf timers, version check, doctor, init template, validate, fmt stub</p>
+            <h3>Compiler/Prompting (20)</h3>
+            <p>Strict guardrails expansion, richer examples, deterministic prompts, safety checks, lint on output, structured JSON outputs, retry with diff, hallucination checks, function registry, test snippets, import whitelist, time/memory caps, resource budget, DSL-to-AST pipeline, incremental compile, streaming logs, temperature per-section, prompt fingerprinting, model capability hints, self-check pass</p>
+            <h3>Local Engine/Ollama (10)</h3>
+            <p>Model auto-pull, fallback chain, model aliasing, metadata hints, prompt length guard, local cache dir, offline docs, multi-shot examples, batch compile, sandbox runner tweaks</p>
+            <h3>Language Core Syntax (30)</h3>
+            <p>Variables, numeric ops, strings with interpolation, if/elseif/else/endif, while/end, for-in range, functions define/call/return, comments, include files, constants, error handling try/catch, comparison ops, logical ops, boolean literals, arrays, maps, len, slice, join/split, to-number/string, random, date/time, format, print variants, input read, exit codes, assert, import stdlib</p>
+            <h3>Standard Library (20)</h3>
+            <p>math, strings, lists, dicts, json, time, os-safe, path-safe, uuid, hashing, regex (safe), http (mock/local), csv, ini, env, templating, table render, progress, logger, metrics</p>
+            <h3>GUI Widgets (18)</h3>
+            <p>checkbox, radio, dropdown, slider, progress bar, image, canvas, grid layout, tabs, menu bar, status bar, toolbar, dialog open/save, color picker, date picker, number spinner, tooltip, hotkeys</p>
+            <h3>GUI Behavior (10)</h3>
+            <p>bind events, state store, theme switch, dark mode, responsive layout presets, modal management, validation helpers, focus control, widget ids/lookup, clear/reset</p>
+            <h3>Filesystem Safety (6)</h3>
+            <p>in-memory fs option, virtual sandbox paths, quota limits, file-type allowlist, safe temp files, cleanup hooks</p>
+            <h3>Networking Safety (6)</h3>
+            <p>disable-by-default, localhost-only option, rate limits, request schema validation, response size caps, timeout defaults</p>
+            <h3>Error Handling and DX (12)</h3>
+            <p>friendly tracebacks, code frames, suggestion engine, link to docs, quick fixes, unknown-command hints, deprecation warnings, strict mode, runtime guards, exit statuses, diag report, reproducible seeds</p>
+            <h3>Testing (10)</h3>
+            <p>golden tests for compiler outputs, fixtures for prompts, unit tests for interpreter, snapshot GUI tests, CLI e2e tests, smoke tests, fuzz tests on parser, mutation tests on guardrails, test matrix for models, CI integration</p>
+            <h3>Performance (8)</h3>
+            <p>caching compiled code, incremental runs, debounce on edits, lazy widget instantiation, parallel compile batches, bytecode reuse (safe), fast-paths for common commands, profiling hooks</p>
+            <h3>Packaging (6)</h3>
+            <p>single-file bundle, zipapp option, plugin system layout, version pinning guidance, extras for gui/http, templates</p>
+            <h3>Documentation (9)</h3>
+            <p>language reference, cookbook, migration 2.x->3.x, safety model, local mode guide, troubleshooting, FAQ, examples gallery, contribution guide</p>
+            <h3>Examples (10)</h3>
+            <p>calculators, forms, games, dashboards, file tools, charts, timers, wizards, notepad, widgets showcase</p>
+            <h3>Internationalization (4)</h3>
+            <p>UTF-8 everywhere, message catalogs, locale-aware formatting, RTL layout presets</p>
+            <h3>Accessibility (5)</h3>
+            <p>ARIA-like hints, keyboard navigation, high-contrast theme, screen reader labels, focus outlines</p>
+            <h3>Telemetry (opt-in) (5)</h3>
+            <p>anonymized usage, error reports, toggle in CLI, redact policies, local logs only</p>
+            <h3>Security (6)</h3>
+            <p>command allow/deny lists, sandboxed exec, taint tracking (basic), input validation helpers, template escaping, dependency integrity</p>
+            <h3>Governance and Releases (10)</h3>
+            <p>RFC process, semantic versioning, deprecation policy, LTS branches, release notes automation, changelog, compatibility tests, support matrix, maintainers guide, issue templates</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Generated by Jules, an AI software engineer. View the source on <a href="https://github.com/your-repo/aila">GitHub</a>.</p>
+    </footer>
+</body>
+</html>
