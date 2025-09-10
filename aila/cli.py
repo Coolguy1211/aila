@@ -144,11 +144,10 @@ def get_client(timeout: int):
 
 def compile_aila(aila_code: str, client) -> str:
     """Send Aila code to Gemini to generate Python code with strict guardrails."""
-    model = client.get_generative_model(MODEL)
     prompt = PROMPT_TEMPLATE.format(aila_code=aila_code)
-    response = model.generate_content(
-        prompt,
-        stream=True
+    response = client.models.generate_content_stream(
+        model=MODEL,
+        contents=prompt,
     )
 
     full_response = ""
