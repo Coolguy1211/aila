@@ -147,9 +147,15 @@ def compile_aila(aila_code: str, client) -> str:
     prompt = PROMPT_TEMPLATE.format(aila_code=aila_code)
     response = client.models.generate_content(
         model=MODEL,
-        contents=prompt
+        contents=prompt,
+        stream=True
     )
-    code = response.text.strip()
+
+    full_response = ""
+    for chunk in response:
+        full_response += chunk.text
+
+    code = full_response.strip()
     code = code.replace('```python', '').replace('```', '')
     return code.strip()
 
@@ -251,6 +257,11 @@ def handle_run(args, colors):
                 py_code = retryer(compile_aila, aila_code, client)
         except Exception as e:
             colors.fail(f"\nAPI call failed after {args.retries} retries: {e}")
+            colors.warn("\nThis could be due to a few reasons:")
+            colors.warn("  - Your internet connection is unstable.")
+            colors.warn("  - The Gemini API service is temporarily down.")
+            colors.warn("  - The compilation is taking longer than expected.")
+            colors.warn("\nYou can try increasing the timeout and retries with the --timeout and --retries flags.")
             py_code = None # Ensure py_code is None on failure
 
         compilation_time = time.time() - compile_start_time
@@ -481,9 +492,9 @@ def main():
     run_parser.add_argument("--dry-run", action="store_true", help="Compile the code but do not execute it")
     run_parser.add_argument("--code-out", help="Save the generated Python code to a file")
     run_parser.add_argument("--dump-ast", action="store_true", help="Parse the Aila code and print the Abstract Syntax Tree")
-    run_parser.add_argument("--timeout", type=int, default=60, help="Timeout for API calls in seconds")
-    run_parser.add_argument("--retries", type=int, default=2, help="Number of retries for API calls on failure")
-    run_parser.add_argument("--retry-delay", type=int, default=5, help="Delay between retries in seconds")
+    run_parser.add_argument("--timeout", type=int, default=120, help="Timeout for API calls in seconds")
+    run_parser.add_argument("--retries", type=int, default=4, help="Number of retries for API calls on failure")
+    run_parser.add_argument("--retry-delay", type=int, default=10, help="Delay between retries in seconds")
     run_parser.set_defaults(func=handle_run)
 
     # Init command
