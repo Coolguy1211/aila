@@ -12,7 +12,7 @@ from tenacity import Retrying, stop_after_attempt, wait_fixed
 from .parser import Parser
 
 __version__ = "3.0.0"
-MODEL = "gemini-1.5-flash"
+MODEL = "gemini-2.5-flash"
 CACHE_DIR = ".aila_cache"
 
 class Colors:
