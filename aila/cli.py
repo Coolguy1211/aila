@@ -144,10 +144,10 @@ def get_client(timeout: int):
 
 def compile_aila(aila_code: str, client) -> str:
     """Send Aila code to Gemini to generate Python code with strict guardrails."""
+    model = client.get_generative_model(MODEL)
     prompt = PROMPT_TEMPLATE.format(aila_code=aila_code)
-    response = client.models.generate_content(
-        model=MODEL,
-        contents=prompt,
+    response = model.generate_content(
+        prompt,
         stream=True
     )
 
@@ -492,9 +492,9 @@ def main():
     run_parser.add_argument("--dry-run", action="store_true", help="Compile the code but do not execute it")
     run_parser.add_argument("--code-out", help="Save the generated Python code to a file")
     run_parser.add_argument("--dump-ast", action="store_true", help="Parse the Aila code and print the Abstract Syntax Tree")
-    run_parser.add_argument("--timeout", type=int, default=120, help="Timeout for API calls in seconds")
-    run_parser.add_argument("--retries", type=int, default=4, help="Number of retries for API calls on failure")
-    run_parser.add_argument("--retry-delay", type=int, default=10, help="Delay between retries in seconds")
+    run_parser.add_argument("--timeout", type=int, default=60, help="Timeout for API calls in seconds")
+    run_parser.add_argument("--retries", type=int, default=2, help="Number of retries for API calls on failure")
+    run_parser.add_argument("--retry-delay", type=int, default=5, help="Delay between retries in seconds")
     run_parser.set_defaults(func=handle_run)
 
     # Init command
