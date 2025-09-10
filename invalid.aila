@@ -1,0 +1,5 @@
+# This Aila script contains intentional errors.
+say This line is okay.
+think about the meaning of life
+repeat
+window "This might be okay, but the previous lines are not."
