@@ -1,0 +1,6 @@
+# A simple GUI example in Aila.
+window "My Aila App"
+label "Welcome to my application!"
+input "Enter your name"
+button "Submit"
+start

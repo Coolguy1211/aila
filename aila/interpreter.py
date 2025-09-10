@@ -1,14 +1,8 @@
 import time
-from dataclasses import dataclass
 from typing import List, Optional
 
 from .gui import AilaGUI
-
-
-@dataclass
-class AilaCommand:
-    name: str
-    args: List[str]
+from .ast import AilaCommand
 
 
 class AilaInterpreter:
@@ -20,14 +14,14 @@ class AilaInterpreter:
 
     def parse(self, source: str) -> List[AilaCommand]:
         commands: List[AilaCommand] = []
-        for raw_line in source.splitlines():
+        for i, raw_line in enumerate(source.splitlines()):
             line = raw_line.strip()
-            if not line:
+            if not line or line.startswith("#"):
                 continue
             parts = line.split()
             name = parts[0].lower()
             args = parts[1:]
-            commands.append(AilaCommand(name=name, args=args))
+            commands.append(AilaCommand(name=name, args=args, line_number=i + 1))
         return commands
 
     def _require_window(self) -> None:
